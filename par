@@ -2,7 +2,8 @@
 
 import argparse
 
-from pareidolia import randomize
+from pareidolia import combine
+from pareidolia.types import Size, Dimensions
 
 
 parser = argparse.ArgumentParser(description='Create image for pareidolia')
@@ -10,7 +11,24 @@ parser.add_argument('--images', '-i', nargs='+', dest='images',
                     help='images to be processed')
 parser.add_argument('--number', '-n', dest='number', type=int,
                     help='number of images to be created')
+parser.add_argument('--size', '-s', dest='size',
+                    help='size of the output images (format WxH)')
+parser.add_argument('--dimensions', '-d', dest='dimensions',
+                    help='rows x columns (format RxC)')
 
 args = parser.parse_args()
 
-randomize(args.images, number=args.number)
+def parse_dimensions(dimension_string, kind=tuple):
+    """
+    x-separated numbers
+    """
+    if dimension_string is None:
+        return None
+
+    dim_list = dimension_string.split('x')
+    return kind(int(dim_list[0]), int(dim_list[1]))
+
+dimensions = parse_dimensions(args.dimensions, Dimensions)
+size = parse_dimensions(args.size, Size)
+
+combine(args.images, number=args.number, dimensions=dimensions, size=size)

@@ -1,1 +1,1 @@
-from .pareidolia import randomize
+from .combiner import combine
